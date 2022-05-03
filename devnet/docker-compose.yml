@@ -1,0 +1,110 @@
+version: "3.3"
+
+volumes:
+  alephium-wallets: {}
+
+services:
+  alephium:
+    # image: alephium/dev-alephium:latest
+    image: alephium/dev-alephium:1.4.0-leman3
+    restart: unless-stopped
+    ports:
+      - 19973:19973/tcp
+      - 19973:19973/udp
+      - 127.0.0.1:20973:20973
+      - 127.0.0.1:21973:21973
+      - 127.0.0.1:22973:22973
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - ./devnet.conf:/alephium-home/.alephium/user.conf
+      - alephium-wallets:/alephium-home/.alephium-wallets
+
+  # grafana:
+  #   image: grafana/grafana:7.2.1
+  #   depends_on:
+  #     - prometheus
+  #   ports:
+  #     - 3000:3000
+  #   volumes:
+  #     - ./grafana/provisioning/:/etc/grafana/provisioning
+  #   env_file:
+  #     - ./grafana/config.monitoring
+  #   restart: unless-stopped
+
+  # prometheus:
+  #   image: prom/prometheus:v2.21.0
+  #   depends_on:
+  #     - alephium
+  #   volumes:
+  #     - ./prometheus/:/etc/prometheus
+  #   command:
+  #     - "--config.file=/etc/prometheus/prometheus.yml"
+  #     - "--storage.tsdb.path=/prometheus"
+  #     - "--web.console.libraries=/usr/share/prometheus/console_libraries"
+  #     - "--web.console.templates=/usr/share/prometheus/consoles"
+  #   restart: unless-stopped
+
+  postgres:
+    container_name: alephium_explorer_postgres
+    image: postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-explorer}
+      PGDATA: /data/postgres
+    ports:
+      - "127.0.0.1:19974:5432"
+    restart: unless-stopped
+
+  pgadmin:
+    container_name: alephium_explorer_pgadmin
+    image: dpage/pgadmin4
+    depends_on:
+      - postgres
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
+      PGADMIN_CONFIG_SERVER_MODE: "False"
+
+    ports:
+      - "${PGADMIN_PORT:-5050}:80"
+    restart: unless-stopped
+
+  explorer-backend:
+    container_name: alephium_explorer_backend
+    image: alephium/explorer-backend:latest
+    depends_on:
+      - alephium
+    restart: unless-stopped
+    ports:
+      - 9090:9090
+    security_opt:
+      - no-new-privileges:true
+    environment:
+      - EXPLORER_HOST=0.0.0.0
+      - EXPLORER_PORT=9090
+      - BLOCKFLOW_HOST=alephium
+      - BLOCKFLOW_PORT=22973
+      - BLOCKFLOW_NETWORK_ID=4
+      - DB_NAME=${POSTGRES_DB:-explorer}
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=${POSTGRES_USER:-postgres}
+      - DB_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+      - EXPLORER_READONLY=false
+      # - ALEPHIUM_API_KEY=0000000000000000000000000000000000000000000000000000000000000000
+
+  explorer-frontend:
+    container_name: alephium_explorer_frontend
+    image: alephium/explorer:latest
+    depends_on:
+      - explorer-backend
+    restart: unless-stopped
+    ports:
+      - 3000:3000
+    security_opt:
+      - no-new-privileges:true
+    environment:
+      - REACT_APP_BACKEND_URL=http://explorer-backend:9090
+      - REACT_APP_NETWORK_TYPE=devnet
