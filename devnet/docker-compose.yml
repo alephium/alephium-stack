@@ -5,8 +5,7 @@ volumes:
 
 services:
   alephium:
-    # image: alephium/dev-alephium:latest
-    image: alephium/dev-alephium:1.4.0-leman3
+    image: alephium/dev-alephium:latest
     restart: unless-stopped
     ports:
       - 19973:19973/tcp
@@ -73,7 +72,7 @@ services:
 
   explorer-backend:
     container_name: alephium_explorer_backend
-    image: alephium/explorer-backend:latest
+    image: alephium/explorer-backend:1.6.5
     depends_on:
       - alephium
     restart: unless-stopped
