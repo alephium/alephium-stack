@@ -18,6 +18,9 @@ services:
     volumes:
       - ./devnet.conf:/alephium-home/.alephium/user.conf
       - alephium-wallets:/alephium-home/.alephium-wallets
+    healthcheck:
+      test: ["CMD", "curl", "http://127.0.0.1:22973/infos/self-clique"]
+      timeout: 45s
 
   # grafana:
   #   image: grafana/grafana:7.2.1
@@ -55,6 +58,10 @@ services:
     ports:
       - "127.0.0.1:19974:5432"
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "pg_isready", "-q", "-d", "postgres", "-U", "postgres"]
+      timeout: 45s
+      interval: 10s
 
   pgadmin:
     container_name: alephium_explorer_pgadmin
@@ -72,9 +79,12 @@ services:
 
   explorer-backend:
     container_name: alephium_explorer_backend
-    image: alephium/explorer-backend:1.6.5
+    image: alephium/explorer-backend:latest
     depends_on:
-      - alephium
+      postgres:
+        condition: service_healthy
+      alephium:
+        condition: service_healthy
     restart: unless-stopped
     ports:
       - 9090:9090
