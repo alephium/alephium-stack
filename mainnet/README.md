@@ -4,7 +4,7 @@
 docker-compose up -d --force-recreate
 ```
 
-Node Swagger: http://127.0.0.1:22973/docs
+Node Swagger: http://127.0.0.1:12973/docs
 
 Explorer Swagger: http://127.0.0.1:9090/docs
 
