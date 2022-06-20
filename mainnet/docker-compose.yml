@@ -8,7 +8,7 @@ volumes:
 
 services:
   alephium:
-    image: alephium/alephium:v1.3.2
+    image: alephium/alephium:latest
     restart: unless-stopped
     ports:
       # 9973 (udp and tcp) is used for external p2p connection and must be exposed
@@ -86,7 +86,7 @@ services:
 
   explorer-backend:
     container_name: alephium_explorer_backend
-    image: alephium/explorer-backend:1.6.9
+    image: alephium/explorer-backend:latest
     depends_on:
       postgres:
         condition: service_healthy
