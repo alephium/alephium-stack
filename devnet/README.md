@@ -15,3 +15,7 @@ Explorer frontend: http://localhost:3000
 ```
 docker-compose down
 ```
+
+# Config
+
+Make sure to use port `22973` for the node host
