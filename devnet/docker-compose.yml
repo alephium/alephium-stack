@@ -5,8 +5,8 @@ volumes:
 
 services:
   alephium:
-    image: alephium/dev-alephium:1.5.0-rc1
-    restart: unless-stopped
+    image: alephium/dev-alephium:1.5.0-rc9
+    restart: no
     ports:
       - 19973:19973/tcp
       - 19973:19973/udp
@@ -18,6 +18,8 @@ services:
     volumes:
       - ./devnet.conf:/alephium-home/.alephium/user.conf
       - alephium-wallets:/alephium-home/.alephium-wallets
+    environment:
+      ALEPHIUM_FILE_LOG_LEVEL: "DEBUG"
     healthcheck:
       test: ["CMD", "curl", "http://127.0.0.1:22973/infos/self-clique"]
       timeout: 45s
@@ -79,13 +81,13 @@ services:
 
   explorer-backend:
     container_name: alephium_explorer_backend
-    image: alephium/explorer-backend:v1.7.1
+    image: alephium/dev-explorer-backend:1.9.0-rc0
     depends_on:
       postgres:
         condition: service_healthy
       alephium:
         condition: service_healthy
-    restart: unless-stopped
+    restart: "no"
     ports:
       - 9090:9090
     security_opt:
