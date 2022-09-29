@@ -5,7 +5,7 @@ volumes:
 
 services:
   alephium:
-    image: alephium/dev-alephium:1.5.0-rc9
+    image: alephium/dev-alephium:1.5.0-rc10
     restart: "no"
     ports:
       - 19973:19973/tcp
