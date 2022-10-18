@@ -24,7 +24,7 @@ services:
     # image: alephium/dev-alephium:1.5.0-rc6
     # image: liuhongchao/dev-alephium:1.5.0-rc6_61-2e02a256-SNAPSHOT-jdk17
     # image: alephium/dev-alephium:1.5.0-rc7_9-efdff693-SNAPSHOT-jdk17
-    image: alephium/dev-alephium:1.5.0-rc9
+    image: alephium/dev-alephium:1.5.0-rc11
     restart: unless-stopped
     ports:
       - 19973:19973/tcp
@@ -95,7 +95,8 @@ services:
 
   explorer-backend:
     container_name: alephium_explorer_backend
-    image: alephium/explorer-backend:1.7.0
+    image: alephium/dev-explorer-backend:latest
+#    image: alephium/explorer-backend:v1.8.0
     depends_on:
       - alephium
     restart: unless-stopped
