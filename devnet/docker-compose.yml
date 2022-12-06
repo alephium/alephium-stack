@@ -5,7 +5,7 @@ volumes:
 
 services:
   alephium:
-    image: alephium/alephium:v1.5.0
+    image: alephium/alephium:v1.5.4
     restart: "no"
     ports:
       - 19973:19973/tcp
@@ -81,7 +81,7 @@ services:
 
   explorer-backend:
     container_name: alephium_explorer_backend
-    image: alephium/explorer-backend:v1.9.0
+    image: alephium/explorer-backend:v1.9.1
     depends_on:
       postgres:
         condition: service_healthy
@@ -108,7 +108,7 @@ services:
 
   explorer-frontend:
     container_name: alephium_explorer_frontend
-    image: alephium/explorer:1.3.0
+    image: alephium/explorer:1.4.0
     depends_on:
       - explorer-backend
     restart: "no"
