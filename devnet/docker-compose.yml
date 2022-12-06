@@ -108,7 +108,7 @@ services:
 
   explorer-frontend:
     container_name: alephium_explorer_frontend
-    image: alephium/explorer:1.3.0
+    image: alephium/explorer:1.4.0
     depends_on:
       - explorer-backend
     restart: "no"
