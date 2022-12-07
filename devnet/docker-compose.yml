@@ -113,7 +113,7 @@ services:
       - explorer-backend
     restart: "no"
     ports:
-      - 3000:3000
+      - 23000:3000
     security_opt:
       - no-new-privileges:true
     environment:
