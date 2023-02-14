@@ -8,7 +8,7 @@ volumes:
 
 services:
   alephium:
-    image: alephium/alephium:v1.5.4
+    image: alephium/alephium:v1.7.0
     restart: unless-stopped
     logging:
       driver: "json-file"
@@ -91,7 +91,7 @@ services:
 
   explorer-backend:
     container_name: alephium_explorer_backend
-    image: alephium/explorer-backend:v1.9.1
+    image: alephium/explorer-backend:v1.12.0
     depends_on:
       postgres:
         condition: service_healthy
