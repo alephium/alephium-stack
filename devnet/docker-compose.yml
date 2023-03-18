@@ -2,7 +2,7 @@ version: "3.3"
 
 services:
   alephium:
-    image: alephium/alephium:v1.7.2
+    image: alephium/alephium:v2.0.0
     restart: "no"
     ports:
       - 19973:19973/tcp
@@ -52,13 +52,13 @@ services:
 
   explorer-backend:
     container_name: alephium_explorer_backend
-    image: alephium/explorer-backend:v1.13.0
+    image: alephium/explorer-backend:v1.13.2
     depends_on:
       postgres:
         condition: service_healthy
       alephium:
         condition: service_healthy
-    restart: "no"
+    restart: unless-stopped
     ports:
       - 9090:9090
     security_opt:
@@ -79,7 +79,7 @@ services:
 
   explorer-frontend:
     container_name: alephium_explorer_frontend
-    image: alephium/explorer:1.4.0
+    image: alephium/explorer:1.5.6
     depends_on:
       - explorer-backend
     restart: "no"
@@ -88,8 +88,8 @@ services:
     security_opt:
       - no-new-privileges:true
     environment:
-      - REACT_APP_BACKEND_URL=http://localhost:9090
-      - REACT_APP_NETWORK_TYPE=testnet
+      - __VITE_BACKEND_URL__=http://localhost:9090
+      - __VITE_NETWORK_TYPE__=testnet
 
   # grafana:
   #   image: grafana/grafana:7.2.1

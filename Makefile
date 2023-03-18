@@ -1,6 +1,6 @@
 start-devnet:
 	@echo ''
-	cd devnet && echo '' && docker-compose up -d --force-recreate
+	cd devnet && echo '' && docker-compose up -d --force-recreate --remove-orphans
 	@echo ''
 	@echo 'Useful resouces:'
 	@echo ' - Node Swagger: http://127.0.0.1:22973/docs'
