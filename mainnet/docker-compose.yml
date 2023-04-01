@@ -4,10 +4,11 @@ volumes:
   prometheus-data: {}
   grafana-data: {}
   alephium-wallets: {}
+  alephium-data: {}
 
 services:
   alephium:
-    image: alephium/alephium:v2.0.3
+    image: alephium/alephium:v2.1.0
     restart: "no"
     logging:
       driver: "local"
@@ -26,10 +27,9 @@ services:
     security_opt:
       - no-new-privileges:true
     volumes:
-      - ~/.alephium:/alephium-home/.alephium
+      - alephium-data:/alephium-home/.alephium
       - alephium-wallets:/alephium-home/.alephium-wallets
       - ./user.conf:/alephium-home/.alephium/user.conf
-      - ./gc.log:/tmp/gc.log
     healthcheck:
       test: ["CMD", "curl", "http://127.0.0.1:12973/infos/self-clique"]
       timeout: 45s
