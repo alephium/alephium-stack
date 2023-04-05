@@ -18,6 +18,9 @@ scrape_configs:
     scrape_interval: 15s
 
     static_configs:
+         - targets: ['explorer-backend:9090']
+           labels:
+             app: 'explorer-backend'
          - targets: ['alephium:22973']
            labels:
              app: 'alephium'
