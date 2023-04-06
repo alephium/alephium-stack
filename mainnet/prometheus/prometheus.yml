@@ -21,3 +21,6 @@ scrape_configs:
          - targets: ['alephium:12973']
            labels:
              app: 'alephium'
+         # - targets: ['explorer-backend:9090']
+         #   labels:
+         #     app: 'explorer-backend'

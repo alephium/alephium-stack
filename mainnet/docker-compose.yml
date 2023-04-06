@@ -66,7 +66,7 @@ services:
 
   # explorer-backend:
   #   container_name: alephium_explorer_backend
-  #   image: alephium/explorer-backend:v1.13.2
+  #   image: alephium/explorer-backend:v1.13.4
   #   depends_on:
   #     postgres:
   #       condition: service_healthy
@@ -102,7 +102,7 @@ services:
 
   # explorer-frontend:
   #   container_name: alephium_explorer_frontend
-  #   image: alephium/explorer:1.5.6
+  #   image: alephium/explorer:1.6.0
   #   depends_on:
   #     - explorer-backend
   #   restart: unless-stopped
@@ -130,6 +130,7 @@ services:
     image: prom/prometheus:v2.21.0
     depends_on:
       - alephium
+   #   - explorer-backend
     volumes:
       - ./prometheus/:/etc/prometheus
       - prometheus-data:/prometheus
