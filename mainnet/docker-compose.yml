@@ -8,7 +8,7 @@ volumes:
 
 services:
   alephium:
-    image: alephium/alephium:v2.1.0
+    image: alephium/alephium:v2.2.0
     restart: "no"
     logging:
       driver: "local"
@@ -28,6 +28,7 @@ services:
       - no-new-privileges:true
     volumes:
       - alephium-data:/alephium-home/.alephium
+      # - ~/.alephium:/alephium-home/.alephium
       - alephium-wallets:/alephium-home/.alephium-wallets
       - ./user.conf:/alephium-home/.alephium/user.conf
     healthcheck:
