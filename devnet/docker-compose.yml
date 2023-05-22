@@ -2,7 +2,7 @@ version: "3.3"
 
 services:
   alephium:
-    image: alephium/alephium:v2.3.2
+    image: alephium/alephium:v2.3.3
     restart: "no"
     ports:
       - 19973:19973/tcp
@@ -14,6 +14,7 @@ services:
       - no-new-privileges:true
     volumes:
       - ./devnet.conf:/alephium-home/.alephium/user.conf
+      # - ~/.alephium:/alephium-home/.alephium
     environment:
       ALEPHIUM_FILE_LOG_LEVEL: "DEBUG"
     healthcheck:
@@ -79,7 +80,7 @@ services:
 
   explorer-frontend:
     container_name: alephium_explorer_frontend
-    image: alephium/explorer:1.6.0
+    image: alephium/explorer:1.6.5
     depends_on:
       - explorer-backend
     restart: "no"
