@@ -2,7 +2,7 @@ version: "3.3"
 
 services:
   alephium:
-    image: alephium/alephium:v2.10.1
+    image: alephium/alephium:v2.10.3
     restart: "no"
     ports:
       - 19973:19973/tcp
@@ -22,7 +22,6 @@ services:
       timeout: 45s
 
   postgres:
-    container_name: alephium_explorer_postgres
     image: postgres
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
@@ -38,7 +37,6 @@ services:
       interval: 10s
 
   pgadmin:
-    container_name: alephium_explorer_pgadmin
     image: dpage/pgadmin4
     depends_on:
       - postgres
@@ -52,8 +50,7 @@ services:
     restart: unless-stopped
 
   explorer-backend:
-    container_name: alephium_explorer_backend
-    image: alephium/explorer-backend:v1.16.1
+    image: alephium/explorer-backend:v1.17.3
     depends_on:
       postgres:
         condition: service_healthy
@@ -70,16 +67,14 @@ services:
       - BLOCKFLOW_HOST=alephium
       - BLOCKFLOW_PORT=22973
       - BLOCKFLOW_NETWORK_ID=4
+      # - ALEPHIUM_API_KEY=0000000000000000000000000000000000000000000000000000000000000000
       - DB_NAME=${POSTGRES_DB:-explorer}
       - DB_HOST=postgres
       - DB_PORT=5432
       - DB_USER=${POSTGRES_USER:-postgres}
       - DB_PASSWORD=${POSTGRES_PASSWORD:-postgres}
-      - EXPLORER_READONLY=false
-      # - ALEPHIUM_API_KEY=0000000000000000000000000000000000000000000000000000000000000000
 
   explorer-frontend:
-    container_name: alephium_explorer_frontend
     image: alephium/explorer:1.8.2
     depends_on:
       - explorer-backend
@@ -89,8 +84,9 @@ services:
     security_opt:
       - no-new-privileges:true
     environment:
-      - __VITE_BACKEND_URL__=http://localhost:9090
-      - __VITE_NETWORK_TYPE__=testnet
+      - VITE_NODE_URL=http://localhost:22973
+      - VITE_BACKEND_URL=http://localhost:9090
+      - VITE_NETWORK_TYPE=devnet
 
   # grafana:
   #   image: grafana/grafana:7.2.1

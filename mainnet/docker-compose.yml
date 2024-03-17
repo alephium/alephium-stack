@@ -8,7 +8,7 @@ volumes:
 
 services:
   alephium:
-    image: alephium/alephium:v2.10.1
+    image: alephium/alephium:v2.10.3
     restart: "no"
     logging:
       driver: "local"
@@ -36,7 +36,6 @@ services:
       timeout: 45s
 
   # postgres:
-  #   container_name: alephium_explorer_postgres
   #   image: postgres
   #   environment:
   #     POSTGRES_USER: ${POSTGRES_USER:-postgres}
@@ -52,7 +51,6 @@ services:
   #     interval: 10s
 
   # pgadmin:
-  #   container_name: alephium_explorer_pgadmin
   #   image: dpage/pgadmin4
   #   depends_on:
   #     - postgres
@@ -66,8 +64,7 @@ services:
   #   restart: unless-stopped
 
   # explorer-backend:
-  #   container_name: alephium_explorer_backend
-  #   image: alephium/explorer-backend:v1.16.1
+  #   image: alephium/explorer-backend:v1.17.3
   #   depends_on:
   #     postgres:
   #       condition: service_healthy
@@ -93,17 +90,15 @@ services:
   #     - EXPLORER_PORT=9090
   #     - BLOCKFLOW_HOST=alephium
   #     - BLOCKFLOW_PORT=12973
+  #     # - ALEPHIUM_API_KEY=0000000000000000000000000000000000000000000000000000000000000000
   #     - DB_NAME=${POSTGRES_DB:-explorer}
   #     - DB_HOST=postgres
   #     - DB_PORT=5432
   #     - DB_USER=${POSTGRES_USER:-postgres}
   #     - DB_PASSWORD=${POSTGRES_PASSWORD:-postgres}
-  #     - EXPLORER_READONLY=false
-  #     # - ALEPHIUM_API_KEY=0000000000000000000000000000000000000000000000000000000000000000
 
   # explorer-frontend:
-  #   container_name: alephium_explorer_frontend
-  #   image: alephium/explorer:1.6.0
+  #   image: alephium/explorer:1.8.2
   #   depends_on:
   #     - explorer-backend
   #   restart: unless-stopped
@@ -112,32 +107,33 @@ services:
   #   security_opt:
   #     - no-new-privileges:true
   #   environment:
-  #     - __VITE_BACKEND_URL__=http://explorer-backend:9090
-  #     - __VITE_NETWORK_TYPE__=testnet
+  #     - VITE_NODE_URL=http://localhost:12973
+  #     - VITE_BACKEND_URL=http://localhost:9090
+  #     - VITE_NETWORK_TYPE=mainnet
 
-  grafana:
-    image: grafana/grafana:7.2.1
-    depends_on:
-      - prometheus
-    ports:
-      - 3001:3000
-    volumes:
-      - ./grafana/provisioning/:/etc/grafana/provisioning
-    env_file:
-      - ./grafana/config.monitoring
-    restart: unless-stopped
+  # grafana:
+  #   image: grafana/grafana:7.2.1
+  #   depends_on:
+  #     - prometheus
+  #   ports:
+  #     - 3001:3000
+  #   volumes:
+  #     - ./grafana/provisioning/:/etc/grafana/provisioning
+  #   env_file:
+  #     - ./grafana/config.monitoring
+  #   restart: unless-stopped
 
-  prometheus:
-    image: prom/prometheus:v2.21.0
-    depends_on:
-      - alephium
-   #   - explorer-backend
-    volumes:
-      - ./prometheus/:/etc/prometheus
-      - prometheus-data:/prometheus
-    command:
-      - "--config.file=/etc/prometheus/prometheus.yml"
-      - "--storage.tsdb.path=/prometheus"
-      - "--web.console.libraries=/usr/share/prometheus/console_libraries"
-      - "--web.console.templates=/usr/share/prometheus/consoles"
-    restart: unless-stopped
+  # prometheus:
+  #   image: prom/prometheus:v2.21.0
+  #   depends_on:
+  #     - alephium
+  #  #   - explorer-backend
+  #   volumes:
+  #     - ./prometheus/:/etc/prometheus
+  #     - prometheus-data:/prometheus
+  #   command:
+  #     - "--config.file=/etc/prometheus/prometheus.yml"
+  #     - "--storage.tsdb.path=/prometheus"
+  #     - "--web.console.libraries=/usr/share/prometheus/console_libraries"
+  #     - "--web.console.templates=/usr/share/prometheus/consoles"
+  #   restart: unless-stopped
