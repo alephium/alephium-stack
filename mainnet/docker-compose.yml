@@ -5,6 +5,7 @@ volumes:
   grafana-data: {}
   alephium-wallets: {}
   alephium-data: {}
+  alephium-explorer: {}
 
 services:
   alephium:
@@ -44,6 +45,8 @@ services:
   #     PGDATA: /data/postgres
   #   ports:
   #     - "127.0.0.1:9974:5432"
+  #   volumes:
+  #     - alephium-explorer:/data/postgres
   #   restart: unless-stopped
   #   healthcheck:
   #     test: ["CMD", "pg_isready", "-q", "-d", "postgres", "-U", "postgres"]
