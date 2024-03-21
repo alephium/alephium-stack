@@ -31,7 +31,7 @@ services:
 
   alephium-2:
     container_name: alephium-2
-    image: alephium/dev-alephium:2.5.8_53-8fb8282b_20240319-2358-SNAPSHOT
+    image: liuhongchao/dev-alephium:local-cluster
     restart: "no"
     ports:
       - 19974:19974/tcp
@@ -51,7 +51,7 @@ services:
 
   alephium-3:
     container_name: alephium-3
-    image: alephium/dev-alephium:2.5.8_53-8fb8282b_20240319-2358-SNAPSHOT
+    image: liuhongchao/dev-alephium:local-cluster
     restart: "no"
     ports:
       - 19975:19975/tcp
