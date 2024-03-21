@@ -1,0 +1,166 @@
+version: "3.3"
+
+services:
+  miner:
+    image: liuhongchao/cpu-solo-miner:local-cluster
+    restart: unless-stopped
+    command:
+      - 'alephium-1:20973'
+    depends_on:
+      - alephium-1
+  
+  alephium-1:
+    container_name: alephium-1
+    image: liuhongchao/dev-alephium:local-cluster
+    restart: "no"
+    ports:
+      - 19973:19973/tcp
+      - 19973:19973/udp
+      - 127.0.0.1:20973:20973
+      - 127.0.0.1:21973:21973
+      - 127.0.0.1:22973:22973
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - ./alephium-1.conf:/alephium-home/.alephium/user.conf
+    environment:
+      ALEPHIUM_FILE_LOG_LEVEL: "DEBUG"
+    healthcheck:
+      test: ["CMD", "curl", "http://127.0.0.1:22973/infos/self-clique"]
+      timeout: 45s
+
+  alephium-2:
+    container_name: alephium-2
+    image: alephium/dev-alephium:2.5.8_53-8fb8282b_20240319-2358-SNAPSHOT
+    restart: "no"
+    ports:
+      - 19974:19974/tcp
+      - 19974:19974/udp
+      - 127.0.0.1:20974:20974
+      - 127.0.0.1:21974:21974
+      - 127.0.0.1:22974:22974
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - ./alephium-2.conf:/alephium-home/.alephium/user.conf
+    environment:
+      ALEPHIUM_FILE_LOG_LEVEL: "DEBUG"
+    healthcheck:
+      test: ["CMD", "curl", "http://127.0.0.1:22974/infos/self-clique"]
+      timeout: 45s
+
+  alephium-3:
+    container_name: alephium-3
+    image: alephium/dev-alephium:2.5.8_53-8fb8282b_20240319-2358-SNAPSHOT
+    restart: "no"
+    ports:
+      - 19975:19975/tcp
+      - 19975:19975/udp
+      - 127.0.0.1:20975:20975
+      - 127.0.0.1:21975:21975
+      - 127.0.0.1:22975:22975
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - ./alephium-3.conf:/alephium-home/.alephium/user.conf
+    environment:
+      ALEPHIUM_FILE_LOG_LEVEL: "DEBUG"
+    healthcheck:
+      test: ["CMD", "curl", "http://127.0.0.1:22975/infos/self-clique"]
+      timeout: 45s
+
+  postgres:
+    container_name: alephium_explorer_postgres
+    image: postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-explorer}
+      PGDATA: /data/postgres
+    ports:
+      - "127.0.0.1:15432:5432"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "pg_isready", "-q", "-d", "postgres", "-U", "postgres"]
+      timeout: 45s
+      interval: 10s
+
+  pgadmin:
+    container_name: alephium_explorer_pgadmin
+    image: dpage/pgadmin4
+    depends_on:
+      - postgres
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
+      PGADMIN_CONFIG_SERVER_MODE: "False"
+
+    ports:
+      - "${PGADMIN_PORT:-5050}:80"
+    restart: unless-stopped
+
+  explorer-backend:
+    container_name: alephium_explorer_backend
+    image: alephium/explorer-backend:v1.16.1
+    depends_on:
+      postgres:
+        condition: service_healthy
+      alephium-1:
+        condition: service_healthy
+    restart: unless-stopped
+    ports:
+      - 9090:9090
+    security_opt:
+      - no-new-privileges:true
+    environment:
+      - EXPLORER_HOST=0.0.0.0
+      - EXPLORER_PORT=9090
+      - BLOCKFLOW_HOST=alephium
+      - BLOCKFLOW_PORT=22973
+      - BLOCKFLOW_NETWORK_ID=4
+      - DB_NAME=${POSTGRES_DB:-explorer}
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=${POSTGRES_USER:-postgres}
+      - DB_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+      - EXPLORER_READONLY=false
+
+  explorer-frontend:
+    container_name: alephium_explorer_frontend
+    image: alephium/explorer:1.8.2
+    depends_on:
+      - explorer-backend
+    restart: "no"
+    ports:
+      - 23000:3000
+    security_opt:
+      - no-new-privileges:true
+    environment:
+      - __VITE_BACKEND_URL__=http://localhost:9090
+      - __VITE_NETWORK_TYPE__=testnet
+
+  grafana:
+    image: grafana/grafana:7.2.1
+    depends_on:
+      - prometheus
+    ports:
+      - 3000:3000
+    volumes:
+      - ./grafana/provisioning/:/etc/grafana/provisioning
+    env_file:
+      - ./grafana/config.monitoring
+    restart: unless-stopped
+
+  prometheus:
+    image: prom/prometheus:v2.21.0
+    depends_on:
+      - alephium-1
+      - explorer-backend
+    volumes:
+      - ./prometheus/:/etc/prometheus
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+      - "--web.console.libraries=/usr/share/prometheus/console_libraries"
+      - "--web.console.templates=/usr/share/prometheus/consoles"
+    restart: unless-stopped
