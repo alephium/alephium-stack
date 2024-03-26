@@ -5,7 +5,8 @@ services:
     image: grafana/grafana:7.2.1
     depends_on:
       - prometheus
-    network_mode: host
+    ports:
+      - 3000:3000
     volumes:
       - ./grafana/provisioning/:/etc/grafana/provisioning
     env_file:
@@ -14,7 +15,6 @@ services:
 
   prometheus:
     image: prom/prometheus:v2.21.0
-    network_mode: host
     volumes:
       - ./prometheus/:/etc/prometheus
     command:
