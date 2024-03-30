@@ -86,7 +86,7 @@ services:
     environment:
       - VITE_NODE_URL=http://localhost:22973
       - VITE_BACKEND_URL=http://localhost:9090
-      - VITE_NETWORK_TYPE=devnet
+      - VITE_NETWORK_TYPE=testnet
 
   # grafana:
   #   image: grafana/grafana:7.2.1
