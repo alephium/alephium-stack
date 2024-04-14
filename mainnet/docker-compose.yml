@@ -1,5 +1,3 @@
-version: "3.3"
-
 volumes:
   prometheus-data: {}
   grafana-data: {}

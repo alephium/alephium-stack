@@ -1,5 +1,3 @@
-version: "3.3"
-
 services:
   alephium:
     image: alephium/dev-alephium:rhone-0.4.0
