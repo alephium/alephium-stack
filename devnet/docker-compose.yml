@@ -1,7 +1,7 @@
 services:
   alephium:
-    image: alephium/alephium:v2.12.0
-    restart: "no"
+    image: alephium/alephium:v2.14.0
+    restart: 'no'
     ports:
       - 19973:19973/tcp
       - 19973:19973/udp
@@ -14,9 +14,9 @@ services:
       - ./devnet.conf:/alephium-home/.alephium/user.conf
       # - ~/.alephium:/alephium-home/.alephium
     environment:
-      ALEPHIUM_FILE_LOG_LEVEL: "DEBUG"
+      ALEPHIUM_FILE_LOG_LEVEL: 'DEBUG'
     healthcheck:
-      test: ["CMD", "curl", "http://127.0.0.1:22973/infos/self-clique"]
+      test: ['CMD', 'curl', 'http://127.0.0.1:22973/infos/self-clique']
       timeout: 45s
 
   postgres:
@@ -27,10 +27,10 @@ services:
       POSTGRES_DB: ${POSTGRES_DB:-explorer}
       PGDATA: /data/postgres
     ports:
-      - "127.0.0.1:19974:5432"
+      - '127.0.0.1:19974:5432'
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "pg_isready", "-q", "-d", "postgres", "-U", "postgres"]
+      test: ['CMD', 'pg_isready', '-q', '-d', 'postgres', '-U', 'postgres']
       timeout: 45s
       interval: 10s
 
@@ -41,10 +41,10 @@ services:
     environment:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
-      PGADMIN_CONFIG_SERVER_MODE: "False"
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
 
     ports:
-      - "${PGADMIN_PORT:-5050}:80"
+      - '${PGADMIN_PORT:-5050}:80'
     restart: unless-stopped
 
   explorer-backend:
@@ -76,7 +76,7 @@ services:
     image: alephium/explorer:1.8.2
     depends_on:
       - explorer-backend
-    restart: "no"
+    restart: 'no'
     ports:
       - 23000:3000
     security_opt:

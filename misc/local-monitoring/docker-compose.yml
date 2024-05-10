@@ -1,0 +1,25 @@
+version: "3.3"
+
+services:
+  grafana:
+    image: grafana/grafana:7.2.1
+    depends_on:
+      - prometheus
+    ports:
+      - 3000:3000
+    volumes:
+      - ./grafana/provisioning/:/etc/grafana/provisioning
+    env_file:
+      - ./grafana/config.monitoring
+    restart: unless-stopped
+
+  prometheus:
+    image: prom/prometheus:v2.21.0
+    volumes:
+      - ./prometheus/:/etc/prometheus
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+      - "--web.console.libraries=/usr/share/prometheus/console_libraries"
+      - "--web.console.templates=/usr/share/prometheus/consoles"
+    restart: unless-stopped
