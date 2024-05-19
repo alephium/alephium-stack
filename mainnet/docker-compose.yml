@@ -7,13 +7,13 @@ volumes:
 
 services:
   alephium:
-    image: alephium/alephium:v2.14.0
-    restart: "no"
+    image: alephium/alephium:v2.14.3
+    restart: 'no'
     logging:
-      driver: "local"
+      driver: 'local'
       options:
-        max-size: "200m"
-        max-file: "30"
+        max-size: '200m'
+        max-file: '30'
     ports:
       # 9973 (udp and tcp) is used for external p2p connection and must be exposed
       - 9973:9973/tcp
@@ -31,7 +31,7 @@ services:
       - alephium-wallets:/alephium-home/.alephium-wallets
       - ./user.conf:/alephium-home/.alephium/user.conf
     healthcheck:
-      test: ["CMD", "curl", "http://127.0.0.1:12973/infos/self-clique"]
+      test: ['CMD', 'curl', 'http://127.0.0.1:12973/infos/self-clique']
       timeout: 45s
 
   # postgres:
