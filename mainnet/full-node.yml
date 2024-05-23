@@ -1,0 +1,125 @@
+version: "3.3"
+
+volumes:
+  prometheus_data: {}
+  grafana_data: {}
+  alephium-data: {}
+  alephium-wallets: {}
+
+services:
+  alephium:
+    image: alephium/alephium:v1.4.4
+    restart: unless-stopped
+    ports:
+      # 9973 (udp and tcp) is used for external p2p connection and must be exposed
+      - 9973:9973/tcp
+      - 9973:9973/udp
+      # ws and http port might not be widely exposed, but to your internal clique/apps/network only.
+      # Defaults are set to not open these two ports publicly. Configure this with caution.
+      - 127.0.0.1:10973:10973
+      - 127.0.0.1:11973:11973
+      - 127.0.0.1:12973:12973
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      # - alephium-data:/alephium-home/.alephium
+      - alephium-wallets:/alephium-home/.alephium-wallets
+      - ./user.conf:/alephium-home/.alephium/user.conf
+    healthcheck:
+      test: ["CMD", "curl", "http://127.0.0.1:12973/infos/self-clique"]
+      timeout: 45s
+
+  grafana:
+    image: grafana/grafana:7.2.1
+    depends_on:
+      - prometheus
+    ports:
+      - 3001:3000
+    volumes:
+      - ./grafana/provisioning/:/etc/grafana/provisioning
+    env_file:
+      - ./grafana/config.monitoring
+    restart: unless-stopped
+
+  prometheus:
+    image: prom/prometheus:v2.21.0
+    depends_on:
+      - alephium
+    volumes:
+      - ./prometheus/:/etc/prometheus
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+      - "--web.console.libraries=/usr/share/prometheus/console_libraries"
+      - "--web.console.templates=/usr/share/prometheus/consoles"
+    restart: unless-stopped
+
+  # postgres:
+  #   container_name: alephium_explorer_postgres
+  #   image: postgres
+  #   environment:
+  #     POSTGRES_USER: ${POSTGRES_USER:-postgres}
+  #     POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+  #     POSTGRES_DB: ${POSTGRES_DB:-explorer}
+  #     PGDATA: /data/postgres
+  #   ports:
+  #     - "127.0.0.1:9974:5432"
+  #   restart: unless-stopped
+  #   healthcheck:
+  #     test: ["CMD", "pg_isready", "-q", "-d", "postgres", "-U", "postgres"]
+  #     timeout: 45s
+  #     interval: 10s
+
+  # pgadmin:
+  #   container_name: alephium_explorer_pgadmin
+  #   image: dpage/pgadmin4
+  #   depends_on:
+  #     - postgres
+  #   environment:
+  #     PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
+  #     PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
+  #     PGADMIN_CONFIG_SERVER_MODE: "False"
+
+  #   ports:
+  #     - "127.0.0.1:${PGADMIN_PORT:-5050}:80"
+  #   restart: unless-stopped
+
+  # explorer-backend:
+  #   container_name: alephium_explorer_backend
+  #   image: alephium/explorer-backend:latest
+  #   depends_on:
+  #     postgres:
+  #       condition: service_healthy
+  #     alephium:
+  #       condition: service_healthy
+  #   restart: unless-stopped
+  #   ports:
+  #     - 9090:9090
+  #   security_opt:
+  #     - no-new-privileges:true
+  #   environment:
+  #     - EXPLORER_HOST=0.0.0.0
+  #     - EXPLORER_PORT=9090
+  #     - BLOCKFLOW_HOST=alephium
+  #     - BLOCKFLOW_PORT=12973
+  #     - DB_NAME=${POSTGRES_DB:-explorer}
+  #     - DB_HOST=postgres
+  #     - DB_PORT=5432
+  #     - DB_USER=${POSTGRES_USER:-postgres}
+  #     - DB_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+  #     - EXPLORER_READONLY=false
+  #     # - ALEPHIUM_API_KEY=0000000000000000000000000000000000000000000000000000000000000000
+
+  # explorer-frontend:
+  #   container_name: alephium_explorer_frontend
+  #   image: alephium/explorer:latest
+  #   depends_on:
+  #     - explorer-backend
+  #   restart: unless-stopped
+  #   ports:
+  #     - 3000:3000
+  #   security_opt:
+  #     - no-new-privileges:true
+  #   environment:
+  #     - REACT_APP_BACKEND_URL=http://explorer-backend:9090
+  #     - REACT_APP_NETWORK_TYPE=devnet
