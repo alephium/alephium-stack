@@ -1,4 +1,8 @@
-start-devnet:
+.ONESHELL:
+
+all: help
+
+start-devnet: ## start the devnet
 	@echo ''
 	cd devnet && echo '' && docker-compose up -d --force-recreate --remove-orphans
 	@echo ''
@@ -8,10 +12,17 @@ start-devnet:
 	@echo ' - Explorer Frontend: http://localhost:23000'
 	@echo ''
 
-stop-devnet:
+stop-devnet: ## stop the devnet
 	@echo ''
 	cd devnet && echo '' && docker-compose down
 
-restart-devnet:
+restart-devnet: ## restart the devnet
 	@make stop-devnet
 	@make start-devnet
+
+help: ## print this help
+	@grep '##' $(MAKEFILE_LIST) \
+		| grep -Ev 'grep|###' \
+		| sed -e 's/^\([^:]*\):[^#]*##\([^#]*\)$$/\1:\2/' \
+		| awk -F ":" '{ printf "%-25s%s\n", "\033[1;32m" $$1 ":\033[m", $$2 }' \
+		| grep -v 'sed'
