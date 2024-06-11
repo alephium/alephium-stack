@@ -1,5 +1,11 @@
 ## Devnet
 
+### Help
+
+```
+make help
+```
+
 ### Start
 
 ```
