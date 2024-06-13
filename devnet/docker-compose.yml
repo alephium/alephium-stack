@@ -73,7 +73,7 @@ services:
       - DB_PASSWORD=${POSTGRES_PASSWORD:-postgres}
 
   explorer-frontend:
-    image: alephium/explorer:1.8.2
+    image: alephium/explorer:1.9.4
     depends_on:
       - explorer-backend
     restart: 'no'
