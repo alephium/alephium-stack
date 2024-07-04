@@ -65,7 +65,7 @@ services:
   #   restart: unless-stopped
 
   # explorer-backend:
-  #   image: alephium/explorer-backend:v1.17.3
+  #   image: alephium/explorer-backend:v1.19.4
   #   depends_on:
   #     postgres:
   #       condition: service_healthy
