@@ -4,7 +4,12 @@ all: help
 
 start-devnet: ## start the devnet
 	@echo ''
-	cd devnet && echo '' && docker-compose up -d --force-recreate --remove-orphans
+	cd devnet && echo '' && \
+    if docker --help | grep -q 'compose'; then \
+      docker compose up -d --force-recreate --remove-orphans; \
+    else \
+      docker-compose up -d --force-recreate --remove-orphans; \
+    fi
 	@echo ''
 	@echo 'Useful resouces:'
 	@echo ' - Node Swagger: http://127.0.0.1:22973/docs'
@@ -14,7 +19,12 @@ start-devnet: ## start the devnet
 
 stop-devnet: ## stop the devnet
 	@echo ''
-	cd devnet && echo '' && docker-compose down
+	cd devnet && echo '' && \
+    if docker --help | grep -q 'compose'; then \
+      docker compose down; \
+    else \
+      docker-compose down; \
+    fi
 
 restart-devnet: ## restart the devnet
 	@make stop-devnet
