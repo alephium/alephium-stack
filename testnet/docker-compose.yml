@@ -7,7 +7,7 @@ volumes:
 
 services:
   alephium:
-    image: alephium/alephium:v3.6.3
+    image: alephium/alephium:v3.7.0
     restart: 'no'
     logging:
       driver: 'local'
@@ -65,7 +65,7 @@ services:
   #   restart: unless-stopped
 
   # explorer-backend:
-  #   image: alephium/explorer-backend:v1.19.4
+  #   image: alephium/explorer-backend:v2.2.3
   #   depends_on:
   #     postgres:
   #       condition: service_healthy
