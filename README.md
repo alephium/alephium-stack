@@ -1,4 +1,8 @@
+This repository contains the docker compose files for the mainnet, testnet and devnet.
+
 ## Devnet
+
+Run a local devnet for development and testing purposes.
 
 ### Help
 
@@ -6,7 +10,7 @@
 make help
 ```
 
-### Start
+### Start Devnet
 
 ```
 make start-devnet
@@ -18,13 +22,13 @@ Explorer Swagger: http://127.0.0.1:9090/docs
 
 Explorer frontend: http://localhost:23000
 
-### Stop
+### Stop Devnet
 
 ```
 make stop-devnet
 ```
 
-### Restart
+### Restart Devnet
 
 ```
 make restart-devnet
