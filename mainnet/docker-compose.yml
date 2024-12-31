@@ -7,7 +7,7 @@ volumes:
 
 services:
   alephium:
-    image: alephium/alephium:v3.8.5
+    image: alephium/alephium:v3.10.0
     restart: 'no'
     logging:
       driver: 'local'
