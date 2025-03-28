@@ -2,7 +2,7 @@ version: "3.3"
 
 services:
   alephium:
-    image: alephium/dev-alephium:danube-devnet-0.1.0
+    image: alephium/dev-alephium:danube-0.2.0
     restart: "no"
     ports:
       - 19973:19973/tcp
