@@ -50,7 +50,7 @@ services:
     restart: unless-stopped
 
   explorer-backend:
-    image: alephium/explorer-backend:v2.6.0
+    image: alephium/explorer-backend:v2.6.1
     depends_on:
       postgres:
         condition: service_healthy
@@ -75,7 +75,7 @@ services:
       - DB_PASSWORD=${POSTGRES_PASSWORD:-postgres}
 
   explorer-frontend:
-    image: alephium/explorer:1.9.4
+    image: alephium/explorer:1.10.11
     depends_on:
       - explorer-backend
     restart: "no"
