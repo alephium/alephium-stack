@@ -1,6 +1,6 @@
 services:
   alephium:
-    image: alephium/alephium:v3.14.0
+    image: alephium/alephium:v3.15.2
     restart: 'no'
     ports:
       - 19973:19973/tcp
