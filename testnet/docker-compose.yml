@@ -45,6 +45,7 @@ services:
   #     - "127.0.0.1:9974:5432"
   #   volumes:
   #     - alephium-testnet-explorer:/data/postgres
+  #     - ./explorer-backend.conf:/alephium-home/.alephium-explorer-backend/user.conf
   #   restart: unless-stopped
   #   healthcheck:
   #     test: ["CMD", "pg_isready", "-q", "-d", "postgres", "-U", "postgres"]
