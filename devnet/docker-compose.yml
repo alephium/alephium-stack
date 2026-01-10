@@ -1,6 +1,6 @@
 services:
   alephium:
-    image: alephium/alephium:v4.2.5
+    image: alephium/alephium:v4.3.0
     restart: 'no'
     ports:
       - 19973:19973/tcp
@@ -73,7 +73,7 @@ services:
       - DB_PASSWORD=${POSTGRES_PASSWORD:-postgres}
 
   explorer-frontend:
-    image: alephium/explorer:1.10.15
+    image: alephium/explorer:1.11.2
     depends_on:
       - explorer-backend
     restart: 'no'
