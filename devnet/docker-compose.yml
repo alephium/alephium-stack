@@ -57,6 +57,8 @@ services:
     restart: unless-stopped
     ports:
       - 9090:9090
+    volumes:
+      - ./explorer-backend.conf:/alephium-home/.alephium-explorer-backend/user.conf
     security_opt:
       - no-new-privileges:true
     environment:
